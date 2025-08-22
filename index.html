@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyPlay Hub - Learn Through Play</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+'study-blue': '#3B82F6',
+'study-yellow': '#FCD34D',
+'study-purple': '#8B5CF6'
+}
+}
+}
+}
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+body { font-family: 'Poppins', sans-serif; 
+background: url('https://scera.org/events/outdoor-movie-disneys-moana/attachment/disney-moana-movie-poster-wallpaper-6677/') no-repeat center center fixed;
+background-size: cover;
+}
+
+.gradient-bg {
+background: none;
+}
+
+.card-hover {
+transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+transform: translateY(-5px);
+box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+animation: fillProgress 2s ease-in-out;
+}
+
+@keyframes fillProgress {
+from { width: 0%; }
+to { width: var(--progress-width); }
+}
+
+.bounce-in {
+animation: bounceIn 0.6s ease-out;
+}
+
+@keyframes bounceIn {
+0% { transform: scale(0.3); opacity: 0; }
+50% { transform: scale(1.05); }
+70% { transform: scale(0.9); }
+100% { transform: scale(1); opacity: 1; }
+}
+
+.quiz-option {
+transition: all 0.3s ease;
+cursor: pointer;
+}
+
+.quiz-option:hover {
+background-color: #EBF8FF;
+border-color: #3B82F6;
+}
+
+.quiz-option.correct {
+background-color: #D1FAE5;
+border-color: #10B981;
+}
+
+.quiz-option.incorrect {
+background-color: #FEE2E2;
+border-color: #EF4444;
+}
+</style>
+</head>
+<body class="bg-gray-50">
+<!-- Navigation -->
+<nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+<div class="container mx-auto px-6 py-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<div class="text-2xl">🎮</div>
+<h1 class="text-2xl font-bold">StudyPlay Hub</h1>
+</div>
+<div class="hidden md:flex space-x-6 items-center">
+<a href="#home" class="hover:text-study-yellow transition-colors">Home</a>
+<a href="#games" class="hover:text-study-yellow transition-colors">Games</a>
+<a href="#projects" class="hover:text-study-yellow transition-colors">Projects</a>
+<a href="#resources" class="hover:text-study-yellow transition-colors">Resources</a>
+<a href="#contact" class="hover:text-study-yellow transition-colors">Contact</a>
+<!-- User Display -->
+<div id="userDisplay" class="hidden flex items-center space-x-3 ml-4">
+    <div class="flex items-center bg-white bg-opacity-20 rounded-full px-3 py-1">
+        <div class="w-8 h-8 bg-study-yellow rounded-full flex items-center justify-center text-gray-800 font-bold mr-2">
+            <span id="userInitial">U</span>
+        </div>
+        <span id="userNameDisplay" class="text-white font-medium">User Name</span>
+    </div>
+    <button id="logoutBtn" class="text-white hover:text-study-yellow text-sm">
+        Logout
+    </button>
+</div>
+</div>
+<button id="mobileMenuBtn" class="md:hidden">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+</svg>
+</button>
+</div>
+<div id="mobileMenu" class="hidden md:hidden mt-4 space-y-2">
+<a href="#home" class="block hover:text-study-yellow transition-colors">Home</a>
+<a href="#games" class="block hover:text-study-yellow transition-colors">Games</a>
+<a href="#projects" class="block hover:text-study-yellow transition-colors">Projects</a>
+<a href="#resources" class="block hover:text-study-yellow transition-colors">Resources</a>
+<a href="#contact" class="block hover:text-study-yellow transition-colors">Contact</a>
+<!-- Mobile User Display -->
+<div id="mobileUserDisplay" class="hidden pt-2 border-t border-white border-opacity-20">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center">
+            <div class="w-8 h-8 bg-study-yellow rounded-full flex items-center justify-center text-gray-800 font-bold mr-2">
+                <span id="mobileUserInitial">U</span>
+            </div>
+            <span id="mobileUserName" class="text-white font-medium">User Name</span>
+        </div>
+        <button id="mobileLogoutBtn" class="text-white hover:text-study-yellow text-sm">
+            Logout
+        </button>
+    </div>
+</div>
+</div>
+</div>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="gradient-bg text-white py-20">
+<div class="container mx-auto px-6 text-center">
+<div class="bounce-in">
+<h2 class="text-5xl font-bold mb-6">Learn Through Play! 🚀</h2>
+<p class="text-xl mb-8 max-w-2xl mx-auto">Transform your study sessions with interactive games, collaborative projects, and engaging resources designed for high school students.</p>
+
+<script>
+// Mobile menu toggle
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+
+mobileMenuBtn.addEventListener('click', () => {
+mobileMenu.classList.toggle('hidden');
+});
+
+// User Authentication System
+window.addEventListener('load', function() {
+    const userSession = localStorage.getItem('studyplay_user_session');
+    
+    if (userSession) {
+        const session = JSON.parse(userSession);
+        
+        // Display user info in desktop nav
+        document.getElementById('userNameDisplay').textContent = session.name;
+        document.getElementById('userInitial').textContent = session.name.charAt(0).toUpperCase();
+        document.getElementById('userDisplay').classList.remove('hidden');
+        
+        // Display user info in mobile nav
+        document.getElementById('mobileUserName').textContent = session.name;
+        document.getElementById('mobileUserInitial').textContent = session.name.charAt(0).toUpperCase();
+        document.getElementById('mobileUserDisplay').classList.remove('hidden');
+        
+        console.log(`Welcome back ${session.name}!`);
+    } else {
+        // Redirect to login page if not logged in
+        alert('Please log in to access StudyPlay Hub');
+        window.location.href = 'login.html';
+    }
+});
+
+// Handle logout (desktop)
+document.getElementById('logoutBtn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('studyplay_user_session');
+        window.location.href = 'login.html';
+    }
+});
+
+// Handle logout (mobile)
+document.getElementById('mobileLogoutBtn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('studyplay_user_session');
+        window.location.href = 'login.html';
+    }
+});
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97326f11059d1f94',t:'MTc1NTg2NjM3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyPlay Hub - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'study-blue': '#3B82F6',
+                        'study-yellow': '#FCD34D',
+                        'study-purple': '#8B5CF6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        <div class="text-center mb-8">
+            <div class="text-4xl mb-4">🎮</div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">StudyPlay Hub</h1>
+            <p class="text-gray-600">Please sign in to continue</p>
+        </div>
+
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                <input type="text" id="fullName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter your full name">
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input type="email" id="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter your email">
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                <input type="password" id="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter your password">
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200">
+                Sign In to StudyPlay Hub
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                fullName: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value
+            };
+            
+            if (!formData.fullName || !formData.email || !formData.password) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            // Save user session
+            const sessionData = {
+                name: formData.fullName,
+                email: formData.email,
+                loginTime: new Date().toISOString()
+            };
+            
+            localStorage.setItem('studyplay_user_session', JSON.stringify(sessionData));
+            
+            alert(`Welcome ${sessionData.name}! Redirecting to StudyPlay Hub...`);
+            
+            // Redirect to main website
+            setTimeout(() => {
+                window.location.href = 'index.html'; // Change this to your main file name
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
